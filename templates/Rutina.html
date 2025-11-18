@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rutinas para {{ deporte }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.5;
+    }
+    h1 {
+      margin-bottom: 5px;
+    }
+    .sub {
+      color: #555;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .botones {
+      margin-bottom: 20px;
+    }
+    .botones button {
+      padding: 8px 16px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    .bloque-rutina {
+      display: none;
+    }
+    .bloque-rutina.activo {
+      display: block;
+    }
+    .rutina-card {
+      margin-bottom: 25px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    ul {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Rutinas para {{ deporte }} - Nivel {{ nivel }}</h1>
+  <p class="sub">
+    Complicación registrada:
+    {% if complicacion %} {{ complicacion }} {% else %} Ninguna {% endif %}
+  </p>
+
+  <div class="botones">
+    <button onclick="mostrarRutina('gimnasio')">Ver rutina de gimnasio</button>
+    <button onclick="mostrarRutina('aire')">Ver rutina de aire libre / piscina</button>
+  </div>
+
+  <!-- ============= BLOQUE GIMNASIO ============= -->
+  <div id="bloque-gimnasio" class="bloque-rutina activo">
+    <h2>Rutinas de Gimnasio</h2>
+
+    <!-- Calentamiento específico por deporte -->
+    <h3>Calentamiento recomendado</h3>
+    <ul>
+      {% if deporte == 'Futbol' %}
+        <li>5 minutos de caminadora o bicicleta suave.</li>
+        <li>Movilidad de tobillos, rodillas y caderas (10 círculos por articulación).</li>
+        <li>Skipping suave en el sitio: 2×30 segundos.</li>
+      {% elif deporte == 'Baloncesto' %}
+        <li>5 minutos de caminata o trote suave.</li>
+        <li>Desplazamientos laterales suaves: 2×10 m.</li>
+        <li>Movilidad de hombros y muñecas con círculos: 2×10 repeticiones.</li>
+      {% elif deporte == 'Natacion' %}
+        <li>Rotaciones de brazos adelante y atrás: 2×10.</li>
+        <li>Movilidad de cuello y hombros: 2×10 repeticiones.</li>
+        <li>3 minutos de cuerda o bici suave para elevar temperatura corporal.</li>
+      {% elif deporte == 'Tenis' %}
+        <li>3–5 minutos de trote suave.</li>
+        <li>Movilidad de hombros y codo con círculos: 2×10.</li>
+        <li>Desplazamientos laterales cortos: 2×10 m.</li>
+      {% else %}
+        <li>5 minutos de cardio suave (caminata o bici).</li>
+        <li>Movilidad articular general de cuello, hombros, caderas, rodillas y tobillos.</li>
+      {% endif %}
+    </ul>
+
+    <h3>Rutina principal</h3>
+
+    {# Filtramos solo las rutinas de gimnasio #}
+    {% set gym_rutinas = rutinas | selectattr('tipo_sesion', 'equalto', 'Gimnasio') | list %}
+
+    {% if gym_rutinas %}
+      {% for r in gym_rutinas %}
+        <div class="rutina-card">
+          <h4>{{ r.titulo }}</h4>
+          <p><strong>Descripción:</strong> {{ r.descripcion }}</p>
+          <p><strong>Duración:</strong> {{ r.duracion }}</p>
+          <p><strong>Pasos:</strong></p>
+          <ul>
+            {% for paso in r.pasos %}
+              <li>{{ paso }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No hay rutinas de gimnasio para este deporte/nivel.</p>
+    {% endif %}
+
+    <h3>Estiramientos recomendados</h3>
+    <ul>
+      {% if deporte == 'Futbol' %}
+        <li>Estiramiento de cuádriceps de pie: 2×20 s por pierna.</li>
+        <li>Estiramiento de isquiotibiales sentado: 2×20 s.</li>
+        <li>Estiramiento de gemelos en pared: 2×20 s por pierna.</li>
+      {% elif deporte == 'Baloncesto' %}
+        <li>Estiramiento de aductores sentado: 2×20 s.</li>
+        <li>Estiramiento de cuádriceps y glúteos: 2×20 s por lado.</li>
+        <li>Estiramiento de hombros cruzados al pecho: 2×20 s.</li>
+      {% elif deporte == 'Natacion' %}
+        <li>Estiramiento de pectoral en pared: 2×20 s por lado.</li>
+        <li>Estiramiento de dorsal (brazos por encima de la cabeza): 2×20 s.</li>
+        <li>Estiramiento de cuello suave en todas las direcciones: 2×10 s.</li>
+      {% elif deporte == 'Tenis' %}
+        <li>Estiramiento de antebrazo (flexión y extensión de muñeca): 2×20 s por brazo.</li>
+        <li>Estiramiento de hombros y tríceps: 2×20 s por brazo.</li>
+        <li>Estiramiento de espalda baja en posición de gato/camello: 2×10 repeticiones.</li>
+      {% else %}
+        <li>Estiramiento global de piernas (cuádriceps, isquios, gemelos).</li>
+        <li>Estiramiento suave de espalda y hombros.</li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <!-- ============= BLOQUE AIRE LIBRE / PISCINA ============= -->
+  <div id="bloque-aire" class="bloque-rutina">
+    <h2>Rutinas de Aire libre / Piscina</h2>
+
+    <h3>Calentamiento recomendado</h3>
+    <ul>
+      {% if deporte == 'Futbol' %}
+        <li>5–8 minutos de trote suave en el campo.</li>
+        <li>Movilidad de tobillos, rodillas y caderas.</li>
+        <li>3 progresiones de carrera aumentando ligeramente la velocidad.</li>
+      {% elif deporte == 'Baloncesto' %}
+        <li>4–5 minutos de trote alrededor de la cancha.</li>
+        <li>Bote suave con cambio de mano mientras trotas.</li>
+        <li>Desplazamientos laterales suaves: 2×10 m.</li>
+      {% elif deporte == 'Natacion' %}
+        <li>2–3 minutos de marcha en el agua poco profunda.</li>
+        <li>Patada suave sujetándose al borde: 2×25 s.</li>
+        <li>Movilidad de hombros y cuello fuera del agua.</li>
+      {% elif deporte == 'Tenis' %}
+        <li>3–5 minutos de trote alrededor de la pista.</li>
+        <li>Desplazamientos laterales con pasos cortos.</li>
+        <li>Simulación de swings (derecha y revés) sin bola: 10–15 reps.</li>
+      {% else %}
+        <li>5 minutos de trote suave o caminata rápida.</li>
+        <li>Movilidad articular general.</li>
+      {% endif %}
+    </ul>
+
+    <h3>Rutina principal</h3>
+
+    {# Rutinas que NO son de gimnasio (Aire libre / Piscina) #}
+    {% set aire_rutinas = rutinas | rejectattr('tipo_sesion', 'equalto', 'Gimnasio') | list %}
+
+    {% if aire_rutinas %}
+      {% for r in aire_rutinas %}
+        <div class="rutina-card">
+          <h4>{{ r.titulo }} ({{ r.tipo_sesion }})</h4>
+          <p><strong>Descripción:</strong> {{ r.descripcion }}</p>
+          <p><strong>Duración:</strong> {{ r.duracion }}</p>
+          <p><strong>Pasos:</strong></p>
+          <ul>
+            {% for paso in r.pasos %}
+              <li>{{ paso }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No hay rutinas de aire libre/piscina para este deporte/nivel.</p>
+    {% endif %}
+
+    <h3>Estiramientos recomendados</h3>
+    <ul>
+      {% if deporte == 'Futbol' %}
+        <li>Estiramiento de cuádriceps, isquiotibiales y gemelos después de correr.</li>
+        <li>Estiramiento de aductores en posición de mariposa: 2×20 s.</li>
+      {% elif deporte == 'Baloncesto' %}
+        <li>Estiramientos de piernas (cuádriceps, isquios, gemelos) apoyado en la pared.</li>
+        <li>Estiramiento de hombros y espalda alta.</li>
+      {% elif deporte == 'Natacion' %}
+        <li>Estiramiento de hombros, pectoral y dorsal fuera del agua.</li>
+        <li>Estiramiento suave de cuello y zona lumbar.</li>
+      {% elif deporte == 'Tenis' %}
+        <li>Estiramientos de antebrazo, hombros y espalda.</li>
+        <li>Estiramiento de piernas con apoyo en banco o valla.</li>
+      {% else %}
+        <li>Estiramiento global de todos los grupos musculares usados.</li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <br />
+  <a href="{{ url_for('encuesta') }}">Volver a la encuesta</a>
+
+  <script>
+    function mostrarRutina(tipo) {
+      const bloqueGim = document.getElementById("bloque-gimnasio");
+      const bloqueAire = document.getElementById("bloque-aire");
+
+      if (tipo === "gimnasio") {
+        bloqueGim.classList.add("activo");
+        bloqueAire.classList.remove("activo");
+      } else {
+        bloqueAire.classList.add("activo");
+        bloqueGim.classList.remove("activo");
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Encuesta Deportiva</title>
+</head>
+<body>
+  <h1>Encuesta de Iniciación Deportiva</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li><strong>{{ category }}:</strong> {{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="post">
+    <h3>Datos de usuario</h3>
+    <label>Usuario:</label>
+    <input type="text" name="usuario" required /><br />
+
+    <label>Contraseña:</label>
+    <input type="password" name="contrasena" required /><br />
+
+    <h3>Pregunta 1: Género</h3>
+    <label><input type="radio" name="genero" value="Masculino" required /> Masculino</label><br />
+    <label><input type="radio" name="genero" value="Femenino" /> Femenino</label><br />
+
+    <h3>Pregunta 2: Deporte de interés</h3>
+    <label><input type="radio" name="deporte" value="Futbol" required /> Fútbol</label><br />
+    <label><input type="radio" name="deporte" value="Baloncesto" /> Baloncesto</label><br />
+    <label><input type="radio" name="deporte" value="Natacion" /> Natación</label><br />
+    <label><input type="radio" name="deporte" value="Tenis" /> Tenis</label><br />
+
+    <h3>Pregunta 3: Edad</h3>
+    <input type="number" name="edad" min="1" max="120" required /><br />
+
+    <h3>Pregunta 4: Frecuencia de entrenamiento</h3>
+    <label><input type="radio" name="frecuencia" value="a" required /> &lt;1 vez/semana</label><br />
+    <label><input type="radio" name="frecuencia" value="b" /> 1–2 veces/semana</label><br />
+    <label><input type="radio" name="frecuencia" value="c" /> 3–4 veces/semana</label><br />
+    <label><input type="radio" name="frecuencia" value="d" /> 5+ veces/semana</label><br />
+
+    <h3>Pregunta 5: Duración de las sesiones</h3>
+    <label><input type="radio" name="duracion" value="a" required /> &lt;20 min</label><br />
+    <label><input type="radio" name="duracion" value="b" /> 20–40 min</label><br />
+    <label><input type="radio" name="duracion" value="c" /> 40–60 min</label><br />
+    <label><input type="radio" name="duracion" value="d" /> &gt;60 min</label><br />
+
+    <h3>Pregunta 6: Experiencia</h3>
+    <label><input type="radio" name="experiencia" value="a" required /> Principiante</label><br />
+    <label><input type="radio" name="experiencia" value="b" /> Intermedio</label><br />
+    <label><input type="radio" name="experiencia" value="c" /> Avanzado</label><br />
+
+    <h3>Pregunta 7: Calentamiento</h3>
+    <label><input type="radio" name="calentamiento" value="a" required /> 0–5 min</label><br />
+    <label><input type="radio" name="calentamiento" value="b" /> 6–10 min</label><br />
+    <label><input type="radio" name="calentamiento" value="c" /> 11–20 min</label><br />
+    <label><input type="radio" name="calentamiento" value="d" /> 21+ min</label><br />
+
+    <h3>Pregunta 8: ¿Tiene complicaciones médicas?</h3>
+    <label><input type="radio" name="complicaciones" value="si" required /> Sí</label><br />
+    <label><input type="radio" name="complicaciones" value="no" /> No</label><br />
+
+    <h3>Pregunta 9: Tipo de complicación (si aplica)</h3>
+    <select name="tipoComplicacion">
+      <option value="">Ninguna / No especificar</option>
+      <option value="Lesion muscoesqueletica">Lesiones musculoesqueléticas</option>
+      <option value="Fatiga extrema">Fatiga extrema</option>
+      <option value="Deshidratacion">Deshidratación</option>
+      <option value="Golpes de calor">Golpes de calor</option>
+      <option value="Complicaciones cardiovasculares">Complicaciones cardiovasculares</option>
+      <option value="Complicaciones neurologicas">Complicaciones neurológicas</option>
+      <option value="Complicacion respiratoria">Complicaciones respiratorias</option>
+      <option value="Discapacidades fisicas">Discapacidades físicas</option>
+    </select><br />
+
+    <h3>Pregunta 10: Tipo de discapacidad (si marcó Discapacidades físicas)</h3>
+    <select name="tipoDiscapacidad">
+      <option value="">Ninguna</option>
+      <option value="Discapacidades fisicas - Discapacidad motriz">Discapacidad motriz</option>
+      <option value="Discapacidades fisicas - Discapacidad extremidades superiores">Discapacidad extremidades superiores</option>
+      <option value="Discapacidades fisicas - Discapacidad extremidades inferiores">Discapacidad extremidades inferiores</option>
+      <option value="Discapacidades fisicas - Discapacidad neuromotora">Discapacidad neuromotora</option>
+      <option value="Discapacidades fisicas - Discapacidad osteoarticular">Discapacidad osteoarticular</option>
+    </select><br /><br />
+
+    <button onclick="location.href='/inicio'"type="submit">Enviar</button>
+  </form>
+</body>
+</html>
