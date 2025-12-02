@@ -1,112 +1,101 @@
 from models.rutina_base import Rutina
 
-
 RUTINAS_FUTBOL = [
-    # PRINCIPIANTE – GIMNASIO
+
+    # PRINCIPIANTE - GIMNASIO
     Rutina(
         deporte="Futbol",
         nivel="Principiante",
         tipo_sesion="Gimnasio",
-        titulo="Fuerza básica para fútbol",
-        descripcion="Ideal para comenzar a fortalecer piernas.",
+        titulo="Base de fuerza para futbolistas",
+        descripcion="Entrenamiento para mejorar fuerza general y prevenir lesiones.",
         duracion="30 min",
         pasos=[
-            "Caminadora suave: 5 min",
-            "Sentadilla guiada: 3x12",
-            "Prensa de piernas: 3x10",
-            "Elevación de gemelos: 3x15",
-            "Curl femoral: 3x12",
-            "Plancha: 3x30s",
-            "Estiramientos: 5 min"
+            {"nombre": "Prensa de pierna", "detalle": "3x12"},
+            {"nombre": "Curl femoral", "detalle": "3x12"},
+            {"nombre": "Elevaciones de gemelos", "detalle": "3x15"},
+            {"nombre": "Plancha", "detalle": "3x30s"}
         ],
-        evitar_flags=["discapacidad_inferior"]
+        evitar_flags=["lesion_articular"]
     ),
 
-    # PRINCIPIANTE – AIRE LIBRE
+    # PRINCIPIANTE - AIRE LIBRE
     Rutina(
         deporte="Futbol",
         nivel="Principiante",
-        tipo_sesion="Aire libre",
-        titulo="Técnica básica y resistencia suave",
-        descripcion="Control de balón y trote suave.",
-        duracion="35 min",
-        pasos=[
-            "Trote suave: 8 min",
-            "Conducción recta: 10 repeticiones",
-            "Pases simples: 20",
-            "Cambios suaves de dirección: 3 series",
-            "Estiramiento final: 5 min"
-        ]
-    ),
-
-    # INTERMEDIO – GIMNASIO
-    Rutina(
-        deporte="Futbol",
-        nivel="Intermedio",
-        tipo_sesion="Gimnasio",
-        titulo="Potencia y fuerza funcional",
-        descripcion="Mejora fuerza y aceleración.",
+        tipo_sesion="Campo",
+        titulo="Técnica básica con balón",
+        descripcion="Mejora conducción, pase y recepción.",
         duracion="40 min",
         pasos=[
-            "Bicicleta: 5 min",
-            "Sentadilla con barra: 4x8",
-            "Peso muerto rumano: 3x10",
-            "Zancadas: 3x12",
-            "Saltos al cajón: 3x10",
-            "Abdominales con rueda: 3x12"
-        ],
-        evitar_flags=["cardiaco"]
-    ),
-
-    # INTERMEDIO – AIRE LIBRE
-    Rutina(
-        deporte="Futbol",
-        nivel="Intermedio",
-        tipo_sesion="Aire libre",
-        titulo="Velocidad y técnica avanzada",
-        descripcion="Ejercicios de aceleración y precisión.",
-        duracion="45 min",
-        pasos=[
-            "Progresiones de velocidad",
-            "Sprints 20m: 6 reps",
-            "Zig-zag entre conos: 3 series",
-            "Pases largos: 20 reps",
-            "Tiros a portería: 15"
+            {"nombre": "Conducción recta", "detalle": "4x20m"},
+            {"nombre": "Zig-zag entre conos", "detalle": "3 repeticiones"},
+            {"nombre": "Pase a la pared", "detalle": "3x10"},
+            {"nombre": "Tiros a portería", "detalle": "10 intentos"}
         ]
     ),
 
-    # AVANZADO – GIMNASIO
+    # INTERMEDIO - GIMNASIO
+    Rutina(
+        deporte="Futbol",
+        nivel="Intermedio",
+        tipo_sesion="Gimnasio",
+        titulo="Fuerza explosiva",
+        descripcion="Desarrolla potencia en tren inferior.",
+        duracion="40 min",
+        pasos=[
+            {"nombre": "Sentadilla con barra", "detalle": "4x8"},
+            {"nombre": "Zancadas", "detalle": "3x12"},
+            {"nombre": "Peso muerto", "detalle": "3x10"},
+            {"nombre": "Core en polea", "detalle": "3x15"}
+        ]
+    ),
+
+    # INTERMEDIO - AIRE LIBRE
+    Rutina(
+        deporte="Futbol",
+        nivel="Intermedio",
+        tipo_sesion="Campo",
+        titulo="Velocidad y control",
+        descripcion="Mejora capacidad aeróbica y técnica con balón.",
+        duracion="45 min",
+        pasos=[
+            {"nombre": "Sprints", "detalle": "6x20m"},
+            {"nombre": "Zig-zag entre conos", "detalle": "4 repeticiones"},
+            {"nombre": "Pases en movimiento", "detalle": "3x12"},
+            {"nombre": "Tiros a portería", "detalle": "15 intentos"}
+        ]
+    ),
+
+    # AVANZADO - GIMNASIO
     Rutina(
         deporte="Futbol",
         nivel="Avanzado",
         tipo_sesion="Gimnasio",
-        titulo="Explosividad máxima",
-        descripcion="Fuerza avanzada para competición.",
+        titulo="Potencia y core avanzado",
+        descripcion="Entrenamiento de fuerza máxima y core funcional.",
         duracion="50 min",
         pasos=[
-            "Sentadilla pesada: 5x5",
-            "Peso muerto pesado: 4x6",
-            "Pliometría avanzada: 4x10",
-            "Sprints inclinados: 6 rondas",
-            "Core avanzado: 4 rondas"
-        ],
-        evitar_flags=["cardiaco"]
+            {"nombre": "Peso muerto", "detalle": "5x5"},
+            {"nombre": "Sentadilla con barra", "detalle": "5x5"},
+            {"nombre": "Plank leg raises", "detalle": "3x20s por pierna"},
+            {"nombre": "Elevaciones frontales", "detalle": "3x12"}
+        ]
     ),
 
-    # AVANZADO – AIRE LIBRE
+    # AVANZADO - AIRE LIBRE
     Rutina(
         deporte="Futbol",
         nivel="Avanzado",
-        tipo_sesion="Aire libre",
-        titulo="Alta intensidad competitiva",
-        descripcion="Simulación de juego real.",
+        tipo_sesion="Campo",
+        titulo="Alta intensidad táctica",
+        descripcion="Simula situaciones reales de juego.",
         duracion="55 min",
         pasos=[
-            "Trote medio: 5 min",
-            "Sprints 30m: 10",
-            "3 vs 3 reducido: 10 min",
-            "Rondos: 5 min",
-            "Tiros potentes: 20 reps"
+            {"nombre": "Sprints", "detalle": "8x20m"},
+            {"nombre": "Zig-zag entre conos", "detalle": "6 repeticiones"},
+            {"nombre": "Pase y desmarque", "detalle": "4x8"},
+            {"nombre": "Tiros a portería", "detalle": "20 intentos"}
         ]
     ),
 ]

@@ -1,11 +1,21 @@
-# viewmodels/rutinas_vm.py
-
-from models.rutinas import RUTINAS
+from models.rutina_base import Rutina
 from models.usuario import Usuario
 from models.firebase import guardar_usuario_en_firebase, obtener_usuario_desde_firebase
+from models.rutinas_futbol import RUTINAS_FUTBOL
+from models.rutinas_baloncesto import RUTINAS_BALONCESTO
+from models.rutinas_natacion import RUTINAS_NATACION
+from models.rutinas_tenis import RUTINAS_TENIS
+from static.img.imagenes_ejercicios import IMAGENES_EJERCICIOS, GIF_POR_DEFECTO
+
+# Unificar todas las rutinas
+TODAS_LAS_RUTINAS = (
+    RUTINAS_FUTBOL +
+    RUTINAS_BALONCESTO +
+    RUTINAS_NATACION +
+    RUTINAS_TENIS
+)
 
 
-# ---- Traduce el valor del radio de experiencia (a, b, c) a texto ----
 def mapear_experiencia(valor):
     if valor == "a":
         return "Principiante"
@@ -13,15 +23,11 @@ def mapear_experiencia(valor):
         return "Intermedio"
     if valor == "c":
         return "Avanzado"
-    # Por si en algún momento ya viene en texto
     return valor
 
-
-# ---- Traduce texto de complicación a flags internos ----
 def obtener_flags(complicacion):
     c = (complicacion or "").lower()
     flags = []
-
     if "inferior" in c or "motriz" in c:
         flags.append("discapacidad_inferior")
     if "superior" in c:
@@ -32,29 +38,20 @@ def obtener_flags(complicacion):
         flags.append("respiratorio")
     if "lesion" in c or "articular" in c:
         flags.append("lesion_articular")
-
     return flags
 
-
-# ---- Crea el usuario a partir del formulario de Encuesta ----
 def crear_usuario_desde_form(form):
-
     nombre = form["usuario"]
     contrasena = form["contrasena"]
     genero = form["genero"]
-    deporte = form["deporte"]           # Futbol / Baloncesto / Natacion / Tenis
-    edad = int(form["edad"])
-
-    experiencia_valor = form["experiencia"]   # a / b / c
-    nivel = mapear_experiencia(experiencia_valor)
-
-    complicaciones_si_no = form["complicaciones"]  # "si" o "no"
-    tipo_comp = form.get("tipoComplicacion", "")
-
-    if complicaciones_si_no == "si" and tipo_comp:
-        complicacion = tipo_comp
-    else:
-        complicacion = ""
+    deporte = form["deporte"]
+    edad_str = form.get("edad", "").strip()
+    try:
+        edad = int(edad_str)
+    except (ValueError, TypeError):
+        edad = 0
+    nivel = mapear_experiencia(form["experiencia"])
+    complicacion = form.get("tipoComplicacion", "") if form["complicaciones"] == "si" else ""
 
     usuario = Usuario(
         nombre=nombre,
@@ -65,50 +62,75 @@ def crear_usuario_desde_form(form):
         nivel=nivel,
         complicacion=complicacion
     )
-
-    # Guardar en Firebase
     guardar_usuario_en_firebase(usuario)
     return usuario
 
+def asignar_gif_a_pasos(rutina: Rutina):
+    nuevos_pasos = []
 
-# ---- Obtiene todas las rutinas válidas para ese usuario ----
+    for paso in rutina.pasos:
+        if isinstance(paso, dict):
+            nombre = paso.get("nombre", "").strip()
+            detalle = paso.get("detalle", "").strip()
+        else:
+            # Separar nombre y detalle si es un string plano tipo "Ejercicio: 3x12"
+            if ":" in paso:
+                nombre, detalle = map(str.strip, paso.split(":", 1))
+            else:
+                nombre = paso.strip()
+                detalle = ""
+
+        clave_encontrada = None
+        paso_lower = nombre.lower()
+
+        for clave in IMAGENES_EJERCICIOS.keys():
+            if clave in paso_lower:
+                clave_encontrada = clave
+                break
+
+        gif = IMAGENES_EJERCICIOS.get(clave_encontrada, GIF_POR_DEFECTO)
+
+        nuevos_pasos.append({
+            "nombre": nombre,
+            "detalle": detalle,
+            "gif": gif
+        })
+
+    rutina.pasos = nuevos_pasos
+    return rutina
+
+
+def asignar_imagen_a_rutina(rutina: Rutina):
+    texto = (rutina.titulo + " " + " ".join(p['nombre'] for p in rutina.pasos)).lower()
+    for clave, archivo in IMAGENES_EJERCICIOS.items():
+        if clave in texto:
+            rutina.imagen = archivo
+            return rutina
+    rutina.imagen = GIF_POR_DEFECTO
+    return rutina
+
 def obtener_rutinas_para_usuario(nombre_usuario: str):
-
     data = obtener_usuario_desde_firebase(nombre_usuario)
-
     if not data:
-        # Si no existe el usuario en Firebase devolvemos algo vacío
-        return {
-            "deporte": "",
-            "nivel": "",
-            "complicacion": "",
-            "rutinas": []
-        }
+        return {"deporte": "", "nivel": "", "complicacion": "", "rutinas": []}
 
     deporte = data["deporte"]
-    nivel = data["nivel"]                   # Aquí ya viene "Principiante", "Intermedio" o "Avanzado"
+    nivel = data["nivel"]
     complicacion = data.get("complicacion", "")
-
     user_flags = obtener_flags(complicacion)
 
-    # 1. Filtrar por deporte
-    filtrado = [r for r in RUTINAS if r.deporte == deporte]
+    rutinas_usuario = [
+        r for r in TODAS_LAS_RUTINAS
+        if r.deporte == deporte and r.nivel == nivel and all(f not in r.evitar_flags for f in user_flags)
+    ]
 
-    # 2. Filtrar por nivel
-    filtrado = [r for r in filtrado if r.nivel == nivel]
-
-    # 3. Filtrar por flags de salud/discapacidad
-    def es_valida(rutina):
-        for f in user_flags:
-            if f in rutina.evitar_flags:
-                return False
-        return True
-
-    rutinas_finales = [r for r in filtrado if es_valida(r)]
+    rutinas_con_imagen = [
+        asignar_imagen_a_rutina(asignar_gif_a_pasos(r)) for r in rutinas_usuario
+    ]
 
     return {
         "deporte": deporte,
         "nivel": nivel,
         "complicacion": complicacion,
-        "rutinas": rutinas_finales
+        "rutinas": rutinas_con_imagen
     }

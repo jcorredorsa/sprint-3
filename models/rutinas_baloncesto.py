@@ -1,6 +1,5 @@
 from models.rutina_base import Rutina
 
-
 RUTINAS_BALONCESTO = [
     # PRINCIPIANTE – GIMNASIO
     Rutina(
@@ -11,11 +10,11 @@ RUTINAS_BALONCESTO = [
         descripcion="Primeros pasos de fuerza para salto y bote.",
         duracion="30 min",
         pasos=[
-            "Caminadora: 5 min",
-            "Prensa: 3x12",
-            "Extensión cuádriceps: 3x12",
-            "Press militar: 3x10",
-            "Remo sentado: 3x12"
+            {"nombre": "Caminadora", "detalle": "5 min"},
+            {"nombre": "Prensa", "detalle": "3x12"},
+            {"nombre": "Extensión cuádriceps", "detalle": "3x12"},
+            {"nombre": "Press militar", "detalle": "3x10"},
+            {"nombre": "Remo sentado", "detalle": "3x12"},
         ]
     ),
 
@@ -28,10 +27,10 @@ RUTINAS_BALONCESTO = [
         descripcion="Coordinación básica y tiro suave.",
         duracion="35 min",
         pasos=[
-            "Bote mano dominante: 2 min",
-            "Bote no dominante: 2 min",
-            "Entradas: 10 por lado",
-            "Tiros cortos: 20"
+            {"nombre": "Bote mano dominante", "detalle": "2 min"},
+            {"nombre": "Bote no dominante", "detalle": "2 min"},
+            {"nombre": "Entradas", "detalle": "10 por lado"},
+            {"nombre": "Tiros cortos", "detalle": "20"},
         ]
     ),
 
@@ -44,10 +43,10 @@ RUTINAS_BALONCESTO = [
         descripcion="Fuerza + pliometría.",
         duracion="40 min",
         pasos=[
-            "Sentadilla: 4x8",
-            "Saltos verticales: 3x10",
-            "Zancadas laterales: 3x12",
-            "Press militar: 3x10"
+            {"nombre": "Sentadilla", "detalle": "4x8"},
+            {"nombre": "Saltos verticales", "detalle": "3x10"},
+            {"nombre": "Zancadas laterales", "detalle": "3x12"},
+            {"nombre": "Press militar", "detalle": "3x10"},
         ]
     ),
 
@@ -60,9 +59,9 @@ RUTINAS_BALONCESTO = [
         descripcion="Agilidad y tiros en movimiento.",
         duracion="45 min",
         pasos=[
-            "Desplazamientos laterales: 3 rondas",
-            "Tiros en suspensión: 25",
-            "1 vs 1 suave: 5-7 min"
+            {"nombre": "Desplazamientos laterales", "detalle": "3 rondas"},
+            {"nombre": "Tiros en suspensión", "detalle": "25"},
+            {"nombre": "1 vs 1 suave", "detalle": "5-7 min"},
         ]
     ),
 
@@ -75,9 +74,9 @@ RUTINAS_BALONCESTO = [
         descripcion="Salto y fuerza máxima.",
         duracion="50 min",
         pasos=[
-            "Sentadilla pesada: 5x5",
-            "Pliometría avanzada: 4x10",
-            "Press militar pesado: 4x6"
+            {"nombre": "Sentadilla pesada", "detalle": "5x5"},
+            {"nombre": "Pliometría avanzada", "detalle": "4x10"},
+            {"nombre": "Press militar pesado", "detalle": "4x6"},
         ]
     ),
 
@@ -90,9 +89,9 @@ RUTINAS_BALONCESTO = [
         descripcion="Alta intensidad ofensiva y defensiva.",
         duracion="55 min",
         pasos=[
-            "Bote explosivo",
-            "Tiros en movimiento: 25",
-            "Partido reducido: 8-10 min"
+            {"nombre": "Bote explosivo", "detalle": ""},
+            {"nombre": "Tiros en movimiento", "detalle": "25"},
+            {"nombre": "Partido reducido", "detalle": "8-10 min"},
         ]
     ),
 ]

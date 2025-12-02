@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}SPORTPRO{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Barra lateral (verde) -->
+  <aside class="sidebar">
+    <div class="logo-block">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-img">
+      <h1 class="app-name">SPORTPRO</h1>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a class="menu-btn {% block menu_rutinas_active %}{% endblock %}" href="{{ url_for('rutina') }}">RUTINAS</a>
+      <button class="menu-btn" disabled>HISTORIAL DE PROGRESO</button>
+      <button class="menu-btn" disabled>RECOMENDACIONES</button>
+      <button class="menu-btn" disabled>ALARMAS</button>
+      <button class="menu-btn" disabled>USUARIO</button>
+    </nav>
+
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+</body>
+</html>

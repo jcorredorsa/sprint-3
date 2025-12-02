@@ -1,249 +1,96 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>Rutinas para {{ deporte }}</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      line-height: 1.5;
-    }
-    h1 {
-      margin-bottom: 5px;
-    }
-    .sub {
-      color: #555;
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
-    .botones {
-      margin-bottom: 20px;
-    }
-    .botones button {
-      padding: 8px 16px;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-    .bloque-rutina {
-      display: none;
-    }
-    .bloque-rutina.activo {
-      display: block;
-    }
-    .rutina-card {
-      margin-bottom: 25px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 10px;
-    }
-    ul {
-      margin-top: 5px;
-    }
-  </style>
-</head>
-<body>
+{% extends "base.html" %} 
+{% block title %}Rutinas{% endblock %}
+{% block menu_rutinas_active %}active{% endblock %}
 
-  <h1>Rutinas para {{ deporte }} - Nivel {{ nivel }}</h1>
-  <p class="sub">
-    Complicación registrada:
-    {% if complicacion %} {{ complicacion }} {% else %} Ninguna {% endif %}
-  </p>
+{% block content %}
 
-  <!-- BOTONES -->
-  <div class="botones">
-    <button onclick="mostrarRutina('gimnasio')">Ver rutina de gimnasio</button>
+{# 1. Determinar tipo desde la URL, por defecto Gimnasio #}
+{% set tipo = request.args.get('tipo', 'Gimnasio') %}
 
-    {% if deporte|lower == 'natacion' %}
-      <button onclick="mostrarRutina('aire')">Ver rutina de piscina</button>
+<h1>Rutinas para {{ deporte }} - Nivel {{ nivel }}</h1>
+
+<p><strong>Complicación registrada:</strong> {{ complicacion if complicacion else "Ninguna" }}</p>
+
+<!-- 2. Botones para cambiar tipo de sesión -->
+<form method="get" style="margin-bottom:20px;">
+    <button name="tipo" value="Gimnasio">Ver rutina de gimnasio</button>
+    {% if deporte == "Natacion" %}
+        <button name="tipo" value="Piscina">Ver rutina de piscina</button>
     {% else %}
-      <button onclick="mostrarRutina('aire')">Ver rutina de aire libre</button>
+        <button name="tipo" value="Aire">Ver rutina de aire libre</button>
     {% endif %}
-  </div>
+</form>
 
-  <!-- ====================== BLOQUE GIMNASIO ====================== -->
-  <div id="bloque-gimnasio" class="bloque-rutina activo">
-    <h2>Rutinas de Gimnasio</h2>
+{# 3. Filtrar rutinas según el tipo seleccionado #}
+{% set filtradas = [] %}
 
-    <!-- Calentamiento -->
-    <h3>Calentamiento recomendado</h3>
-    <ul>
-      {% if deporte|lower == 'futbol' %}
-        <li>5 minutos de caminadora o bicicleta suave.</li>
-        <li>Movilidad de tobillos, rodillas y caderas (10 círculos por articulación).</li>
-        <li>Skipping suave: 2×30 segundos.</li>
+{% for r in rutinas %}
+    {% set t = r.tipo_sesion.lower() %}
 
-      {% elif deporte|lower == 'baloncesto' %}
-        <li>5 minutos de trote suave.</li>
-        <li>Desplazamientos laterales suaves: 2×10 m.</li>
-        <li>Movilidad de hombros y muñecas.</li>
+    {# Gimnasio: cualquier rutina cuyo tipo contenga "gimnasio" #}
+    {% if tipo == "Gimnasio" and "gimnasio" in t %}
+        {% set _ = filtradas.append(r) %}
 
-      {% elif deporte|lower == 'natacion' %}
-        <li>Rotaciones de brazos adelante/atrás: 2×10.</li>
-        <li>Movilidad de cuello y hombros.</li>
-        <li>3 minutos de bici suave.</li>
+    {# Piscina (solo natación) #}
+    {% elif tipo == "Piscina" and "piscina" in t %}
+        {% set _ = filtradas.append(r) %}
 
-      {% elif deporte|lower == 'tenis' %}
-        <li>3–5 minutos de trote suave.</li>
-        <li>Movilidad de hombros y codos.</li>
-        <li>Desplazamientos laterales cortos.</li>
+    {# Aire libre / campo / pista: todo lo que NO es gimnasio ni piscina #}
+    {% elif tipo == "Aire" and "gimnasio" not in t and "piscina" not in t %}
+        {% set _ = filtradas.append(r) %}
+    {% endif %}
+{% endfor %}
 
-      {% else %}
-        <li>5 minutos de cardio suave.</li>
-        <li>Movilidad articular general.</li>
-      {% endif %}
-    </ul>
+<h2>
+    {% if tipo == "Gimnasio" %}
+        Rutinas de Gimnasio
+    {% elif tipo == "Piscina" %}
+        Rutinas de Piscina
+    {% else %}
+        Rutinas de Aire libre / Campo
+    {% endif %}
+</h2>
 
-    <h3>Rutina principal</h3>
+{# 4. Mostrar rutinas o mensaje si no hay #}
+{% if filtradas|length == 0 %}
+    <p>No hay rutinas de {{ tipo }} para este deporte/nivel.</p>
+{% else %}
 
-    {% set gym_rutinas = rutinas | selectattr('tipo_sesion', 'equalto', 'Gimnasio') | list %}
+    {% for r in filtradas %}
+        <div class="rutina-box" style="margin-bottom: 30px;">
 
-    {% if gym_rutinas %}
-      {% for r in gym_rutinas %}
-        <div class="rutina-card">
-          <h4>{{ r.titulo }}</h4>
-          <p><strong>Descripción:</strong> {{ r.descripcion }}</p>
-          <p><strong>Duración:</strong> {{ r.duracion }}</p>
-          <p><strong>Pasos:</strong></p>
-          <ul>
-            {% for paso in r.pasos %}
-              <li>{{ paso }}</li>
-            {% endfor %}
-          </ul>
+            <h3>{{ r.titulo }}</h3>
+
+            {% if r.imagen %}
+                <img src="{{ url_for('static', filename='img/ejercicios/' ~ r.imagen) }}"
+                     alt="{{ r.titulo }}"
+                     class="rutina-img"
+                     style="max-width: 300px; display:block; margin: 10px 0;">
+            {% endif %}
+
+            <p><strong>Descripción:</strong> {{ r.descripcion }}</p>
+            <p><strong>Duración:</strong> {{ r.duracion }}</p>
+
+            <p><strong>Pasos:</strong></p>
+            <ul>
+                {% for paso in r.pasos %}
+                    <li style="margin-bottom: 10px;">
+                        <strong>{{ paso.nombre }}</strong>{% if paso.detalle %}: {{ paso.detalle }}{% endif %}
+                        {% if paso.gif %}
+                        <br>
+                        <img src="{{ url_for('static', filename='img/ejercicios/' ~ paso.gif) }}"
+                             alt="{{ paso.nombre }}"
+                             style="max-width: 200px; margin-top: 5px;">
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+
         </div>
-      {% endfor %}
-    {% else %}
-      <p>No hay rutinas de gimnasio para este deporte/nivel.</p>
-    {% endif %}
+    {% endfor %}
 
-    <h3>Estiramientos recomendados</h3>
-    <ul>
-      {% if deporte|lower == 'futbol' %}
-        <li>Estiramiento de cuádriceps: 2×20 s.</li>
-        <li>Estiramiento de isquiotibiales: 2×20 s.</li>
-        <li>Estiramiento de gemelos: 2×20 s.</li>
+{% endif %}
 
-      {% elif deporte|lower == 'baloncesto' %}
-        <li>Estiramiento de aductores: 2×20 s.</li>
-        <li>Estiramiento de cuádriceps y glúteos.</li>
-        <li>Estiramiento de hombros cruzados al pecho.</li>
+<a href="{{ url_for('encuesta') }}">Volver a la encuesta</a>
 
-      {% elif deporte|lower == 'natacion' %}
-        <li>Estiramiento de pectoral en pared.</li>
-        <li>Estiramiento de dorsal.</li>
-        <li>Rotaciones suaves de cuello.</li>
-
-      {% elif deporte|lower == 'tenis' %}
-        <li>Estiramientos de antebrazo: 2×20 s.</li>
-        <li>Estiramiento de hombros y tríceps.</li>
-        <li>Gato/camello para zona lumbar.</li>
-
-      {% else %}
-        <li>Estiramiento general del cuerpo.</li>
-      {% endif %}
-    </ul>
-  </div>
-
-  <!-- ====================== BLOQUE AIRE / PISCINA ====================== -->
-  <div id="bloque-aire" class="bloque-rutina">
-
-    {% if deporte|lower == 'natacion' %}
-      <h2>Rutinas de Piscina</h2>
-    {% else %}
-      <h2>Rutinas de Aire libre</h2>
-    {% endif %}
-
-    <h3>Calentamiento recomendado</h3>
-    <ul>
-      {% if deporte|lower == 'futbol' %}
-        <li>5–8 minutos de trote suave en el campo.</li>
-        <li>Movilidad de piernas.</li>
-        <li>3 progresiones de carrera.</li>
-
-      {% elif deporte|lower == 'baloncesto' %}
-        <li>4–5 minutos de trote.</li>
-        <li>Bote suave mientras trotas.</li>
-        <li>Desplazamientos laterales.</li>
-
-      {% elif deporte|lower == 'natacion' %}
-        <li>Marcha suave en agua poco profunda.</li>
-        <li>Patada ligera sujetándose del borde.</li>
-        <li>Movilidad de hombros antes de entrar al agua.</li>
-
-      {% elif deporte|lower == 'tenis' %}
-        <li>3–5 minutos de trote.</li>
-        <li>Pasos laterales.</li>
-        <li>Simulación de golpes sin bola.</li>
-
-      {% else %}
-        <li>5 minutos de trote o caminata rápida.</li>
-        <li>Movilidad articular.</li>
-      {% endif %}
-    </ul>
-
-    <!-- Rutina -->
-    <h3>Rutina principal</h3>
-
-    {% set aire_rutinas = rutinas | rejectattr('tipo_sesion', 'equalto', 'Gimnasio') | list %}
-
-    {% if aire_rutinas %}
-      {% for r in aire_rutinas %}
-        <div class="rutina-card">
-          <h4>{{ r.titulo }} ({{ r.tipo_sesion }})</h4>
-          <p><strong>Descripción:</strong> {{ r.descripcion }}</p>
-          <p><strong>Duración:</strong> {{ r.duracion }}</p>
-          <p><strong>Pasos:</strong></p>
-          <ul>
-            {% for paso in r.pasos %}
-              <li>{{ paso }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endfor %}
-    {% else %}
-      {% if deporte|lower == 'natacion' %}
-        <p>No hay rutinas de piscina para este deporte/nivel.</p>
-      {% else %}
-        <p>No hay rutinas de aire libre para este deporte/nivel.</p>
-      {% endif %}
-    {% endif %}
-
-    <h3>Estiramientos recomendados</h3>
-    <ul>
-      {% if deporte|lower == 'futbol' %}
-        <li>Cuádriceps, isquiotibiales y gemelos después de correr.</li>
-
-      {% elif deporte|lower == 'baloncesto' %}
-        <li>Estiramientos de piernas apoyado en pared.</li>
-
-      {% elif deporte|lower == 'natacion' %}
-        <li>Estiramiento de hombros, pectoral y dorsal.</li>
-
-      {% elif deporte|lower == 'tenis' %}
-        <li>Antebrazo, hombros y espalda.</li>
-
-      {% else %}
-        <li>Estiramiento global.</li>
-      {% endif %}
-    </ul>
-  </div>
-
-  <br />
-  <a href="{{ url_for('encuesta') }}">Volver a la encuesta</a>
-
-  <script>
-    function mostrarRutina(tipo) {
-      const bloqueGim = document.getElementById("bloque-gimnasio");
-      const bloqueAire = document.getElementById("bloque-aire");
-
-      if (tipo === "gimnasio") {
-        bloqueGim.classList.add("activo");
-        bloqueAire.classList.remove("activo");
-      } else {
-        bloqueAire.classList.add("activo");
-        bloqueGim.classList.remove("activo");
-      }
-    }
-  </script>
-
-</body>
-</html>
+{% endblock %}

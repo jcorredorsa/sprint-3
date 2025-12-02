@@ -1,6 +1,5 @@
 from models.rutina_base import Rutina
 
-
 RUTINAS_NATACION = [
 
     # PRINCIPIANTE – GIMNASIO
@@ -12,11 +11,11 @@ RUTINAS_NATACION = [
         descripcion="Fortalece espalda, hombros y core.",
         duracion="30 min",
         pasos=[
-            "Jalón al pecho: 3x12",
-            "Remo sentado: 3x12",
-            "Rotadores externos con banda: 3x15",
-            "Plancha: 3x25s",
-            "Estiramiento de dorsales: 3 min"
+            {"nombre": "Jalón al pecho", "detalle": "3x12"},
+            {"nombre": "Remo sentado", "detalle": "3x12"},
+            {"nombre": "Rotadores externos con banda", "detalle": "3x15"},
+            {"nombre": "Plancha", "detalle": "3x25s"},
+            {"nombre": "Estiramiento de dorsales", "detalle": "3 min"},
         ],
         evitar_flags=["discapacidad_superior"]
     ),
@@ -30,10 +29,10 @@ RUTINAS_NATACION = [
         descripcion="Aprende flotación, respiración y patada.",
         duracion="40 min",
         pasos=[
-            "Flotación ventral: 3 min",
-            "Patada con tabla: 4x25m",
-            "Respiración bilateral: 3x25m",
-            "Crol suave: 4x25m"
+            {"nombre": "Flotación ventral", "detalle": "3 min"},
+            {"nombre": "Patada con tabla", "detalle": "4x25m"},
+            {"nombre": "Respiración bilateral", "detalle": "3x25m"},
+            {"nombre": "Crol suave", "detalle": "4x25m"},
         ],
         evitar_flags=["respiratorio"]
     ),
@@ -47,10 +46,10 @@ RUTINAS_NATACION = [
         descripcion="Mejora velocidad y técnica.",
         duracion="40 min",
         pasos=[
-            "Pull-over con mancuerna: 3x12",
-            "Remo de pie cuerda: 3x12",
-            "Plancha lateral: 3x30s",
-            "Elevaciones frontales: 3x12"
+            {"nombre": "Pull-over con mancuerna", "detalle": "3x12"},
+            {"nombre": "Remo de pie cuerda", "detalle": "3x12"},
+            {"nombre": "Plancha lateral", "detalle": "3x30s"},
+            {"nombre": "Elevaciones frontales", "detalle": "3x12"},
         ]
     ),
 
@@ -63,10 +62,10 @@ RUTINAS_NATACION = [
         descripcion="Coordina brazada + respiración + patada.",
         duracion="45 min",
         pasos=[
-            "Crol 50m suave: 2 repeticiones",
-            "Crol técnica 25m: 4 repeticiones",
-            "Crol ritmo medio 50m: 3 repeticiones",
-            "Patada lateral: 4x25m"
+            {"nombre": "Crol suave", "detalle": "2x50m"},
+            {"nombre": "Crol técnica", "detalle": "4x25m"},
+            {"nombre": "Crol ritmo medio", "detalle": "3x50m"},
+            {"nombre": "Patada lateral", "detalle": "4x25m"},
         ],
         evitar_flags=["cardiaco"]
     ),
@@ -80,10 +79,10 @@ RUTINAS_NATACION = [
         descripcion="Ideal para nadadores competitivos.",
         duracion="50 min",
         pasos=[
-            "Jalón al pecho pesado: 5x6",
-            "Remo curvo pesado: 4x6",
-            "Core con polea: 4x15",
-            "Rotación explosiva: 4x12"
+            {"nombre": "Jalón al pecho", "detalle": "5x6 (pesado)"},
+            {"nombre": "Remo con barra", "detalle": "4x6 (pesado)"},
+            {"nombre": "Core en polea", "detalle": "4x15"},
+            {"nombre": "Rotación explosiva", "detalle": "4x12"},
         ]
     ),
 
@@ -96,10 +95,10 @@ RUTINAS_NATACION = [
         descripcion="Máxima velocidad y técnica competitiva.",
         duracion="55 min",
         pasos=[
-            "25m velocidad: 6 repeticiones",
-            "50m velocidad: 4 repeticiones",
-            "Salidas explosivas: 10 repeticiones",
-            "Virajes rápidos: 4 rondas"
+            {"nombre": "Crol velocidad", "detalle": "6x25m"},
+            {"nombre": "Crol rápido", "detalle": "4x50m"},
+            {"nombre": "Salidas explosivas", "detalle": "10 reps"},
+            {"nombre": "Virajes rápidos", "detalle": "4 rondas"},
         ],
         evitar_flags=["cardiaco"]
     ),
